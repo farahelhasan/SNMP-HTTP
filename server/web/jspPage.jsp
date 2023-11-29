@@ -1,4 +1,5 @@
 <%
+<<<<<<< HEAD
    Map<String, String> mp = new HashMap<String, String>(); 
   mp.put("farah", "123");
   mp.put("ahmad", "456");

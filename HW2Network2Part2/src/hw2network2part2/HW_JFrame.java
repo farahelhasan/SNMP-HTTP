@@ -5,10 +5,14 @@
 package hw2network2part2;
 
 import java.io.BufferedWriter;
+import java.io.DataInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.RandomAccessFile;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -237,9 +241,9 @@ public class HW_JFrame extends javax.swing.JFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(systemButton)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(udpButton)
-                        .addGap(18, 18, 18)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 13, Short.MAX_VALUE)
                         .addComponent(arpButton)
                         .addGap(18, 18, 18)
                         .addComponent(tcpButton))
@@ -278,6 +282,7 @@ public class HW_JFrame extends javax.swing.JFrame {
     }//GEN-LAST:event_verfiy1ButtonActionPerformed
 
     private void verfiy2ButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_verfiy2ButtonActionPerformed
+     sendData_GET();
         // TODO add your handling code here:
     }//GEN-LAST:event_verfiy2ButtonActionPerformed
 
@@ -292,6 +297,41 @@ public class HW_JFrame extends javax.swing.JFrame {
     /**
      * @param args the command line arguments
      */
+    
+    
+     void sendData_GET() {
+        DataInputStream send;
+        String Name = this.usernameText.getText();
+        String Password = this.passwordText.getText();
+      
+        try {
+            String str = "http://localhost:8085/server/jspPage.jsp?Name="+Name+"&Password="+Password;
+            URL u = new URL(str);               //+"?"+dataStr
+            //send 
+            send = new DataInputStream(u.openConnection().getInputStream());
+           
+            int temp;
+            String state = "";
+
+            HttpURLConnection myConn =(HttpURLConnection) u.openConnection();
+            InputStream recive = myConn.getInputStream();
+            while ((temp = recive.read()) != -1) {
+               
+                    state = state + (char) temp;
+
+            }
+            this.stateOfVerfiy2.setText(state);
+
+        } catch (Exception e) {
+            System.out.println(e.toString());
+            this.stateOfVerfiy2.setText("Faild: exception");
+        }
+
+    }
+    
+    
+    
+    
     public static void main(String args[]) {
         /* Set the Nimbus look and feel */
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
