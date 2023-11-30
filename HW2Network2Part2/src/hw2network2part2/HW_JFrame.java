@@ -8,6 +8,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.JsonSyntaxException;
+import java.awt.List;
 import java.io.BufferedWriter;
 import java.io.DataInputStream;
 import java.io.FileNotFoundException;
@@ -16,9 +17,12 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.RandomAccessFile;
 import java.lang.reflect.Array;
+import java.lang.reflect.Field;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JButton;
@@ -364,7 +368,23 @@ int flagVerfiy2 = 0;
     /**
      * @param args the command line arguments
      */
-    
+    public static <T> ArrayList<Object> convertObjectToArrayList(T obj) throws IllegalAccessException {
+        ArrayList<Object> arrayList = new ArrayList<>();
+        Class<?> objClass = obj.getClass();
+
+        // Get all fields of the class, including private ones
+        Field[] fields = objClass.getDeclaredFields();
+
+        for (Field field : fields) {
+            // Make private fields accessible
+            field.setAccessible(true);
+
+            // Add field values to the ArrayList
+            arrayList.add(field.get(obj));
+        }
+
+        return arrayList;
+    }
     
      void sendData_GET(int verify) {
          
@@ -434,29 +454,46 @@ int flagVerfiy2 = 0;
             
             if(flagVerfiy2==1 && flagVerfiy1==1)
             {
-                this.systemButton.setEnabled(true);
+                this.systemButton.setEnabled(true); 
                 this.arpButton.setEnabled(true);
                 this.udpButton.setEnabled(true);
                 this.tcpButton.setEnabled(true);
+                JSONObject jo = new JSONObject("{'0':"+state+"}");
+                JSONArray array = jo.getJSONArray("0");
                 if(verify==3)
                 {
                     String res="";
-                    res+="#             IPADDRESS             PORT\n";
-                    JSONObject jo = new JSONObject("{'0':"+state+"}");
-                    JSONArray array = jo.getJSONArray("0");
-                    ArrayList<Object> listdata = new ArrayList<Object>();  
-                if (array != null) {   
+                    res+="#                                 IPADDRESS                               PORT\n";
 
+                if (array != null) {   
                     //Iterating JSON array  
                     for (int i=0;i<array.length();i++){   
-                        //Adding each element of JSON array into ArrayList  
-                        listdata.add(array.get(i));  
+                        JSONObject jo1 = new JSONObject("{'0':"+array.get(i)+"}");
+                        JSONArray array1 = jo1.getJSONArray("0");
+                        //Adding each element of JSON array into ArrayList 
+                        res+=""+array1.get(0)+"                                 "+array1.get(1)+"                               "+array1.get(2)+"\n";
                     }   
                 }  
-                    this.jTextArea1.setText(""+listdata.get(0));
+                    this.jTextArea1.setText(""+res);
 
                 }
-                else if(verify==3 || verify==4||verify==5)
+                else if(verify==4)
+                {
+                    String res="";
+                    res+="#     LOCAL ADDRESS       LOCAL PORT      REMOTE ADDRESS      REMOTE PORT     STATE\n";
+
+                if (array != null) {   
+                    //Iterating JSON array  
+                    for (int i=0;i<array.length();i++){   
+                        JSONObject jo1 = new JSONObject("{'0':"+array.get(i)+"}");
+                        JSONArray array1 = jo1.getJSONArray("0");
+                        //Adding each element of JSON array into ArrayList 
+                        res+=""+array1.get(0)+"     "+array1.get(1)+"       "+array1.get(2)+"      "+array1.get(3)+"      "+array1.get(4)+"     "+array1.get(5)+"\n";
+                    }   
+                }  
+                    this.jTextArea1.setText(""+res);
+                }
+                else if(verify==5)
                 {
                     this.jTextArea1.setText(state);
                 }
