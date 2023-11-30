@@ -19,8 +19,8 @@ import java.util.Map;
  *
  * @author User
  */
-@WebServlet(urlPatterns = {"/newServlet"})
-public class newServlet extends HttpServlet {
+@WebServlet(urlPatterns = {"/nServlet"})
+public class nServlet extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -36,19 +36,17 @@ public class newServlet extends HttpServlet {
         response.setContentType("text/html;charset=UTF-8");
         PrintWriter out = response.getWriter();
         Map<String, String> mp = new HashMap<String, String>(); 
-        mp.put("farah", "123");
-        mp.put("ahmad", "456");
+        mp.put("1", "123");
+        mp.put("2", "456");
         try  {
-            String Name = request.getParameter("Name");
+            String id = request.getParameter("id");
             String Password = request.getParameter("Password");
-              if(mp.containsKey(Name) && mp.get(Name).equals(Password)){
+              if(mp.containsKey(id) && mp.get(id).equals(Password)){
                out.println("Permit" );
               }
               else {
                   out.println("Deny");
               }
-            
-            
         }catch(Exception e) {
            out.println(e.toString()) ;
         }

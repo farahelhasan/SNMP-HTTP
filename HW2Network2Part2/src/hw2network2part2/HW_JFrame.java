@@ -3,7 +3,11 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
  */
 package hw2network2part2;
-
+import com.google.gson.Gson;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+import com.google.gson.JsonSyntaxException;
 import java.io.BufferedWriter;
 import java.io.DataInputStream;
 import java.io.FileNotFoundException;
@@ -11,6 +15,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.RandomAccessFile;
+import java.lang.reflect.Array;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
@@ -21,17 +26,33 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JTextField;
+import org.json.JSONArray;
+import org.json.JSONObject;
 /**
  *
  * @author hp
  */
+
 public class HW_JFrame extends javax.swing.JFrame {
+int flagVerfiy1 = 0;
+int flagVerfiy2 = 0;
 
     /**
      * Creates new form HW_JFrame
      */
     public HW_JFrame() {
         initComponents();
+        this.systemButton.setEnabled(false);
+        this.arpButton.setEnabled(false);
+        this.udpButton.setEnabled(false);
+        this.tcpButton.setEnabled(false);
+
+        this.updateButton.setEnabled(false);
+        this.sysContactText.setEnabled(false);
+        this.sysNameText.setEnabled(false);
+        this.sysLocationText.setEnabled(false);
+        
+        
     }
 
     /**
@@ -55,7 +76,7 @@ public class HW_JFrame extends javax.swing.JFrame {
         udpButton = new javax.swing.JButton();
         arpButton = new javax.swing.JButton();
         tcpButton = new javax.swing.JButton();
-        jButton7 = new javax.swing.JButton();
+        updateButton = new javax.swing.JButton();
         jLabel4 = new javax.swing.JLabel();
         jLabel5 = new javax.swing.JLabel();
         jLabel6 = new javax.swing.JLabel();
@@ -110,10 +131,25 @@ public class HW_JFrame extends javax.swing.JFrame {
         });
 
         systemButton.setText("System");
+        systemButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                systemButtonActionPerformed(evt);
+            }
+        });
 
         udpButton.setText("UDP");
+        udpButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                udpButtonActionPerformed(evt);
+            }
+        });
 
         arpButton.setText("ARP");
+        arpButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                arpButtonActionPerformed(evt);
+            }
+        });
 
         tcpButton.setText("TCP");
         tcpButton.addActionListener(new java.awt.event.ActionListener() {
@@ -122,7 +158,12 @@ public class HW_JFrame extends javax.swing.JFrame {
             }
         });
 
-        jButton7.setText("Update");
+        updateButton.setText("Update");
+        updateButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                updateButtonActionPerformed(evt);
+            }
+        });
 
         jLabel4.setText("sysContact");
 
@@ -200,7 +241,7 @@ public class HW_JFrame extends javax.swing.JFrame {
                                                 .addGroup(layout.createSequentialGroup()
                                                     .addComponent(sysLocationText, javax.swing.GroupLayout.PREFERRED_SIZE, 84, javax.swing.GroupLayout.PREFERRED_SIZE)
                                                     .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                                    .addComponent(jButton7, javax.swing.GroupLayout.PREFERRED_SIZE, 73, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                    .addComponent(updateButton, javax.swing.GroupLayout.PREFERRED_SIZE, 73, javax.swing.GroupLayout.PREFERRED_SIZE)
                                                     .addGap(60, 60, 60)))))
                                     .addGroup(layout.createSequentialGroup()
                                         .addGap(117, 117, 117)
@@ -258,7 +299,7 @@ public class HW_JFrame extends javax.swing.JFrame {
                     .addComponent(sysContactText, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(sysNameText, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(sysLocationText, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButton7))
+                    .addComponent(updateButton))
                 .addContainerGap())
         );
 
@@ -279,10 +320,14 @@ public class HW_JFrame extends javax.swing.JFrame {
 
     private void verfiy1ButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_verfiy1ButtonActionPerformed
         // TODO add your handling code here:
+        sendData_GET(1);
+        
     }//GEN-LAST:event_verfiy1ButtonActionPerformed
 
     private void verfiy2ButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_verfiy2ButtonActionPerformed
-     sendData_GET();
+        sendData_GET(2);
+        
+
         // TODO add your handling code here:
     }//GEN-LAST:event_verfiy2ButtonActionPerformed
 
@@ -292,21 +337,68 @@ public class HW_JFrame extends javax.swing.JFrame {
 
     private void tcpButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tcpButtonActionPerformed
         // TODO add your handling code here:
+        sendData_GET(4);
     }//GEN-LAST:event_tcpButtonActionPerformed
+
+    private void udpButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_udpButtonActionPerformed
+        // TODO add your handling code here:
+        sendData_GET(3);
+    }//GEN-LAST:event_udpButtonActionPerformed
+
+    private void arpButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_arpButtonActionPerformed
+        // TODO add your handling code here:
+        sendData_GET(5);
+    }//GEN-LAST:event_arpButtonActionPerformed
+
+    private void systemButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_systemButtonActionPerformed
+        // TODO add your handling code here:
+        sendData_GET(6);
+
+    }//GEN-LAST:event_systemButtonActionPerformed
+
+    private void updateButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_updateButtonActionPerformed
+        sendData_GET(7);
+        // TODO add your handling code here:
+    }//GEN-LAST:event_updateButtonActionPerformed
 
     /**
      * @param args the command line arguments
      */
     
     
-     void sendData_GET() {
+     void sendData_GET(int verify) {
+         
         DataInputStream send;
+        String id=this.IdText.getText();
         String Name = this.usernameText.getText();
         String Password = this.passwordText.getText();
-      
+        String sysContact = this.sysContactText.getText();
+        String sysName =  this.sysNameText.getText();
+        String sysLocation = this.sysLocationText.getText();
+        this.updateButton.setEnabled(false);
+        this.sysContactText.setEnabled(false);
+        this.sysNameText.setEnabled(false);
+        this.sysLocationText.setEnabled(false);
         try {
-            String str = "http://localhost:8085/server/jspPage.jsp?Name="+Name+"&Password="+Password;
-            URL u = new URL(str);               //+"?"+dataStr
+            String str="";
+            if(verify==2)
+                str = "http://localhost:8085/server/jspPage.jsp?Name="+Name+"&Password="+Password;
+            else if(verify==1)
+//                D:\University\University_materials\Fourth Year\First Semester\Network 2\HW2\SNMP-HTTP\server\test\nServlet.java
+                str = "http://localhost:8085/server/nServlet?id="+id+"&Password="+Password;
+            else if(verify==3)
+                str = "http://localhost/SNMP_Project/server/UDP_Info.php";
+            else if(verify==4)
+                str = "http://localhost/SNMP_Project/server/TCP_info.php";
+            else if(verify==5)
+                str = "http://localhost/SNMP_Project/server/ARP_Info.php";
+            else if(verify==6){
+                str = "http://localhost/SNMP_Project/server/System_Info.php";
+            }
+            else if(verify==7)
+                str = "http://localhost/SNMP_Project/server/updateData.php?sysContact="+sysContact+"&sysName="+sysName+"&sysLocation="+sysLocation;
+            
+            URL u = new URL(str);               //+"?"+dataStr 
             //send 
             send = new DataInputStream(u.openConnection().getInputStream());
            
@@ -320,11 +412,83 @@ public class HW_JFrame extends javax.swing.JFrame {
                     state = state + (char) temp;
 
             }
-            this.stateOfVerfiy2.setText(state);
+           
+            if(verify ==1)
+            {
+                this.stateOfVerfiy1.setText(state);
+                if(state.trim().equals("Permit"))
+                  flagVerfiy1=1;
+                else
+                    flagVerfiy1=0;
+               
+            }    
+            else if(verify==2)
+            {
+              this.stateOfVerfiy2.setText(state);
+              if(state.trim().equals("Permit"))
+                  flagVerfiy2=1;
+              else 
+                  flagVerfiy2=0;
+            }
+            
+            
+            if(flagVerfiy2==1 && flagVerfiy1==1)
+            {
+                this.systemButton.setEnabled(true);
+                this.arpButton.setEnabled(true);
+                this.udpButton.setEnabled(true);
+                this.tcpButton.setEnabled(true);
+                if(verify==3)
+                {
+                    String res="";
+                    res+="#             IPADDRESS             PORT\n";
+                    JSONObject jo = new JSONObject("{'0':"+state+"}");
+                    JSONArray array = jo.getJSONArray("0");
+                    ArrayList<Object> listdata = new ArrayList<Object>();  
+                if (array != null) {   
 
+                    //Iterating JSON array  
+                    for (int i=0;i<array.length();i++){   
+                        //Adding each element of JSON array into ArrayList  
+                        listdata.add(array.get(i));  
+                    }   
+                }  
+                    this.jTextArea1.setText(""+listdata.get(0));
+
+                }
+                else if(verify==3 || verify==4||verify==5)
+                {
+                    this.jTextArea1.setText(state);
+                }
+                else if(verify==6)
+                {
+                    this.updateButton.setEnabled(true);
+                    this.sysContactText.setEnabled(true);
+                    this.sysNameText.setEnabled(true);
+                    this.sysLocationText.setEnabled(true);
+                    this.jTextArea1.setText(state);
+
+                }
+                else if(verify==7)
+                {
+                    sendData_GET(6);
+                }
+            }
+            else {
+                this.systemButton.setEnabled(false);
+                this.arpButton.setEnabled(false);
+                this.udpButton.setEnabled(false);
+                this.tcpButton.setEnabled(false);
+            }
+                
+                
         } catch (Exception e) {
-            System.out.println(e.toString());
-            this.stateOfVerfiy2.setText("Faild: exception");
+            e.printStackTrace();
+            if(verify ==2)
+                this.stateOfVerfiy2.setText("Faild: exception");
+            else
+                this.stateOfVerfiy1.setText("Faild: exception");
+
         }
 
     }
@@ -333,6 +497,7 @@ public class HW_JFrame extends javax.swing.JFrame {
     
     
     public static void main(String args[]) {
+        
         /* Set the Nimbus look and feel */
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
         /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
@@ -367,7 +532,6 @@ public class HW_JFrame extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JTextField IdText;
     private javax.swing.JButton arpButton;
-    private javax.swing.JButton jButton7;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
@@ -387,6 +551,7 @@ public class HW_JFrame extends javax.swing.JFrame {
     private javax.swing.JButton systemButton;
     private javax.swing.JButton tcpButton;
     private javax.swing.JButton udpButton;
+    private javax.swing.JButton updateButton;
     private javax.swing.JTextField usernameText;
     private javax.swing.JButton verfiy1Button;
     private javax.swing.JButton verfiy2Button;

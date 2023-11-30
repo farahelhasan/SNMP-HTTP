@@ -79,7 +79,7 @@
                                               <Group type="102" attributes="0">
                                                   <Component id="sysLocationText" min="-2" pref="84" max="-2" attributes="0"/>
                                                   <EmptySpace max="32767" attributes="0"/>
-                                                  <Component id="jButton7" min="-2" pref="73" max="-2" attributes="0"/>
+                                                  <Component id="updateButton" min="-2" pref="73" max="-2" attributes="0"/>
                                                   <EmptySpace min="-2" pref="60" max="-2" attributes="0"/>
                                               </Group>
                                           </Group>
@@ -155,7 +155,7 @@
                   <Component id="sysContactText" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="sysNameText" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="sysLocationText" alignment="3" min="-2" max="-2" attributes="0"/>
-                  <Component id="jButton7" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="updateButton" alignment="3" min="-2" max="-2" attributes="0"/>
               </Group>
               <EmptySpace max="-2" attributes="0"/>
           </Group>
@@ -213,16 +213,25 @@
       <Properties>
         <Property name="text" type="java.lang.String" value="System"/>
       </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="systemButtonActionPerformed"/>
+      </Events>
     </Component>
     <Component class="javax.swing.JButton" name="udpButton">
       <Properties>
         <Property name="text" type="java.lang.String" value="UDP"/>
       </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="udpButtonActionPerformed"/>
+      </Events>
     </Component>
     <Component class="javax.swing.JButton" name="arpButton">
       <Properties>
         <Property name="text" type="java.lang.String" value="ARP"/>
       </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="arpButtonActionPerformed"/>
+      </Events>
     </Component>
     <Component class="javax.swing.JButton" name="tcpButton">
       <Properties>
@@ -232,10 +241,13 @@
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="tcpButtonActionPerformed"/>
       </Events>
     </Component>
-    <Component class="javax.swing.JButton" name="jButton7">
+    <Component class="javax.swing.JButton" name="updateButton">
       <Properties>
         <Property name="text" type="java.lang.String" value="Update"/>
       </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="updateButtonActionPerformed"/>
+      </Events>
     </Component>
     <Component class="javax.swing.JLabel" name="jLabel4">
       <Properties>
