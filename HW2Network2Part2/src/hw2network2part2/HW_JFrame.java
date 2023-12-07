@@ -368,25 +368,8 @@ int flagVerfiy2 = 0;
     /**
      * @param args the command line arguments
      */
-    public static <T> ArrayList<Object> convertObjectToArrayList(T obj) throws IllegalAccessException {
-        ArrayList<Object> arrayList = new ArrayList<>();
-        Class<?> objClass = obj.getClass();
-
-        // Get all fields of the class, including private ones
-        Field[] fields = objClass.getDeclaredFields();
-
-        for (Field field : fields) {
-            // Make private fields accessible
-            field.setAccessible(true);
-
-            // Add field values to the ArrayList
-            arrayList.add(field.get(obj));
-        }
-
-        return arrayList;
-    }
     
-     void sendData_GET(int verify) {
+void sendData_GET(int verify) {
          
         DataInputStream send;
         String id=this.IdText.getText();
@@ -439,7 +422,7 @@ int flagVerfiy2 = 0;
                 if(state.trim().equals("Permit"))
                   flagVerfiy1=1;
                 else
-                    flagVerfiy1=0;
+                  flagVerfiy1=0;
                
             }    
             else if(verify==2)
@@ -458,12 +441,16 @@ int flagVerfiy2 = 0;
                 this.arpButton.setEnabled(true);
                 this.udpButton.setEnabled(true);
                 this.tcpButton.setEnabled(true);
-                JSONObject jo = new JSONObject("{'0':"+state+"}");
-                JSONArray array = jo.getJSONArray("0");
+               
                 if(verify==3)
-                {
+                {    
+                    JSONObject jo = new JSONObject("{'0':"+state+"}");
+                    JSONArray array = jo.getJSONArray("0");
+                     
+                     String headerFormat = String.format("%40s %40s %40s%n", "#", "IPADDRESS", "PORT");
                     String res="";
-                    res+="#                                 IPADDRESS                               PORT\n";
+                    
+                    res+= headerFormat;
 
                 if (array != null) {   
                     //Iterating JSON array  
@@ -471,41 +458,79 @@ int flagVerfiy2 = 0;
                         JSONObject jo1 = new JSONObject("{'0':"+array.get(i)+"}");
                         JSONArray array1 = jo1.getJSONArray("0");
                         //Adding each element of JSON array into ArrayList 
-                        res+=""+array1.get(0)+"                                 "+array1.get(1)+"                               "+array1.get(2)+"\n";
-                    }   
+                        String formatData = String.format("%-40s %-40s %-40s%n",array1.get(0), array1.get(1), array1.get(2));
+                        res+=  formatData;
+                    }  
                 }  
                     this.jTextArea1.setText(""+res);
 
                 }
                 else if(verify==4)
                 {
-                    String res="";
-                    res+="#     LOCAL ADDRESS       LOCAL PORT      REMOTE ADDRESS      REMOTE PORT     STATE\n";
+                    JSONObject jo = new JSONObject("{'0':"+state+"}");
+                    JSONArray array = jo.getJSONArray("0");
+                    String headerFormat = String.format("%-4s %-40s %-40s %-4s %-4s %-4s%n", "#", "LOCAL ADDRESS", "LOCAL PORT ","REMOTE ADDRESS", "REMOTE PORT", "STATE");
 
+                    String res="";
+                    res+= headerFormat;
+                    
                 if (array != null) {   
                     //Iterating JSON array  
                     for (int i=0;i<array.length();i++){   
                         JSONObject jo1 = new JSONObject("{'0':"+array.get(i)+"}");
                         JSONArray array1 = jo1.getJSONArray("0");
                         //Adding each element of JSON array into ArrayList 
-                        res+=""+array1.get(0)+"     "+array1.get(1)+"       "+array1.get(2)+"      "+array1.get(3)+"      "+array1.get(4)+"     "+array1.get(5)+"\n";
+                       String formatData = String.format("%-4s %-40s %-40s %-40s %-40s %-40s%n", array1.get(0), array1.get(1), array1.get(2),array1.get(3), array1.get(4),array1.get(5));
+                        res+= formatData;
                     }   
                 }  
                     this.jTextArea1.setText(""+res);
                 }
                 else if(verify==5)
                 {
-                    this.jTextArea1.setText(state);
+                    JSONObject jo = new JSONObject("{'0':"+state+"}");
+                    JSONArray array = jo.getJSONArray("0");
+                    String headerFormat = String.format("%-4s %-60s %-40s %-40s%n", "#", "MAC", "IP ","TYPE");
+
+                    String res="";
+                    res+=headerFormat;
+
+                if (array != null) {   
+                    //Iterating JSON array  
+                    for (int i=0;i<array.length();i++){   
+                        JSONObject jo1 = new JSONObject("{'0':"+array.get(i)+"}");
+                        JSONArray array1 = jo1.getJSONArray("0");
+                        //Adding each element of JSON array into ArrayList
+                        String formatData = String.format("%-4s %-60s %-40s %-40s%n", array1.get(0),array1.get(1), array1.get(2),array1.get(3));
+
+                        res+= formatData ;
+                } 
                 }
+                    this.jTextArea1.setText(""+res);
+                }
+                
                 else if(verify==6)
-                {
+                {  
+                    JSONArray array = new JSONArray(state);
+                    String res="";
+                    for (int i = 0; i < array.length(); i++) {
+                       String value= array.getString(i);
+                         res+=""+value+"\n" ;
+
+                    }
+                    
                     this.updateButton.setEnabled(true);
                     this.sysContactText.setEnabled(true);
                     this.sysNameText.setEnabled(true);
                     this.sysLocationText.setEnabled(true);
-                    this.jTextArea1.setText(state);
+                    
+                    this.jTextArea1.setText(""+res);
 
+                   
+                    
                 }
+                
+                
                 else if(verify==7)
                 {
                     sendData_GET(6);
@@ -528,9 +553,7 @@ int flagVerfiy2 = 0;
 
         }
 
-    }
-    
-    
+}
     
     
     public static void main(String args[]) {
